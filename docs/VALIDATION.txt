@@ -1,0 +1,49 @@
+DualWieldVC v12 validation
+==========================
+
+VC IDB anchors rechecked against reconstructed gtavc.part01..12 dump:
+- CPed::Attack                    0x52B070
+- CWeapon::Fire call #1           0x52B749 -> 0x5D45E0
+- CWeapon::Fire call #2           0x52B9B4 -> 0x5D45E0
+- CPed::Render                    0x4FE0F0
+- CPed::Render -> CEntity::Render 0x4FE216 -> 0x4887D0
+- CPed::PreRender -> UpdateRpHAnim 0x4FE511 -> 0x489330
+- CEntity::UpdateRpHAnim          0x489330
+- GetAnimHierarchyFromSkinClump   0x57F250
+- RtQuatRotate                    0x65ABD0
+
+Native weapon ownership verified from CPed::Render:
+- [ped + 0x1F0] = native weapon atomic
+- [ped + 0x1C0] = m_apFrames[6]
+- slot 6 node is resolved through RpHAnimIDGetIndex and its HAnim matrix is copied into the native weapon frame
+- therefore native slot = 6 / HAnim 24 and added slot = 5 / HAnim 34
+
+ConvertPedNode2BoneTag verified:
+- slot 3  -> HAnim 32 (left upper arm)
+- slot 4  -> HAnim 22 (right upper arm)
+- slot 5  -> HAnim 34 (left hand)
+- slot 6  -> HAnim 24 (right hand)
+- slot 13 -> HAnim 33 (left forearm)
+- slot 14 -> HAnim 23 (right forearm)
+- slot 15 -> HAnim 31 (left clavicle)
+- slot 16 -> HAnim 21 (right clavicle)
+
+CPedIK::PointGunInDirectionUsingArm verified:
+- obtains the skinned hierarchy
+- edits interpolation-frame quaternions via frameData+0x10, quat at interp+0x08
+- uses right-arm slots including 16/14/4/6
+- calls RtQuatRotate
+- sets CPed+0x154 bit 0x20 after quaternion edits
+
+v12 source checks:
+- PASS: stale SecondHandRight INI is not read
+- PASS: second hand is fixed to slot 5 / HAnim 34
+- PASS: native hand is fixed to slot 6 / HAnim 24
+- PASS: no analytic two-bone world-position solver is used in active v12 path
+- PASS: active pose path edits interpolation quaternions then invokes original UpdateRpHAnim
+- PASS: second muzzle derives from the opposite hand bone + CWeaponInfo::m_vecFireOffset
+- PASS: second weapon default grip matches SA twin-pistol render transform: X 180, translate 0.04/-0.05/0
+- PASS: lexical delimiter balance check over full Main.cpp
+- PASS: isolated new quaternion-axis math compiles with clang++ -std=c++17 -fsyntax-only
+
+Runtime validation remains required in Windows GTA Vice City. This Linux environment cannot link/run the final x86 ASI against the pinned Plugin-SDK runtime.
