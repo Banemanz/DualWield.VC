@@ -1,0 +1,11 @@
+PASS: full Main.cpp lexical delimiter balance
+PASS: GTAVC-only compile guard present
+PASS: stale SecondHandRight is not read
+PASS: second hand fixed to VC slot 5
+PASS: native hand fixed to VC slot 6
+PASS: VC RtQuatRotate used
+PASS: PreRender UpdateRpHAnim CALL anchor
+PASS: Render CALL anchor
+PASS: fire call #1 anchor
+PASS: fire call #2 anchor
+INFO: ReplayNativeGunIKIntoOppositeArm textual occurrences=1 (1 means retained dead definition only)
