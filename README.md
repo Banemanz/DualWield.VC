@@ -41,3 +41,9 @@ The quaternion-pose line also prints the runtime node IDs for all eight frame sl
 ## Build
 
 Build Win32/x86 as a GTA Vice City Plugin-SDK ASI (`plugin_vc`) using the project's pinned 10/31/2025 Plugin-SDK state. Do not link this target as GTA SA.
+
+## TODO:
+
+Gameplay integration (Stats system or cheat to activate)
+Fix remaining visual bugs.
+Prevent/Address potential crashes.
